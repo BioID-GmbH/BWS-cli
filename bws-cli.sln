@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2042
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "bws-cli", "bws-cli\bws-cli.fsproj", "{AF52C885-CD9E-4C3C-A1EC-BA2F8376CA62}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4DA6689D-9064-445F-B856-23B7F6AA86B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DA6689D-9064-445F-B856-23B7F6AA86B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DA6689D-9064-445F-B856-23B7F6AA86B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DA6689D-9064-445F-B856-23B7F6AA86B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF52C885-CD9E-4C3C-A1EC-BA2F8376CA62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF52C885-CD9E-4C3C-A1EC-BA2F8376CA62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF52C885-CD9E-4C3C-A1EC-BA2F8376CA62}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF52C885-CD9E-4C3C-A1EC-BA2F8376CA62}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C8CE55CB-D4BE-4C5B-8426-00A841CB5179}
+	EndGlobalSection
+EndGlobal

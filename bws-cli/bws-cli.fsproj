@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <EmbeddedResource Remove="img\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Util.fs" />
+    <Compile Include="Abbreviation.fs" />
+    <Compile Include="Help.fs" />
+    <Compile Include="CommandLine.fs" />
+    <Compile Include="Json.fs" />
+    <Compile Include="Communication.fs" />
+    <Compile Include="Api.fs" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+  <Import Project="..\.paket\Paket.Restore.targets" />
+</Project>
