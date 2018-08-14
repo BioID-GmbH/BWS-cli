@@ -1,0 +1,7 @@
+[
+  { "Success": true },
+  {
+    "Success": true,
+    "Error": "ChallengeResponseFailed"
+  }
+]

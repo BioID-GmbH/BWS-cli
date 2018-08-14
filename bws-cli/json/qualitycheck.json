@@ -1,0 +1,36 @@
+[
+  {
+    "Success": true,
+    "Errors": [
+      {
+        "Code": "ImageTooSmall",
+        "Message": "The part of the image containing the found face is too small.",
+        "Details": "The found face (with an eye-distance of 97 pixels) does not have the required eye-distance of at least 240 pixels."
+      },
+      {
+        "Code": "ImageOverExposure",
+        "Message": "The image is over-exposed, i.e. it has too many very light pixels.",
+        "Details": "The amount of very bright pixels is 5.45%, where only 1.00% are allowed."
+      }
+    ],
+    "EyeCenters": {
+      "RightEyeX": 196.74,
+      "RightEyeY": 299.538,
+      "LeftEyeX": 294.606,
+      "LeftEyeY": 300.547
+    },
+    "ProcessedSample": "data:image/bmp;base64,..."
+  },
+  {
+    "Success": false,
+    "Errors": [
+      {
+        "Code": "NoFaceFound",
+        "Message": "No face was found in the face sample.",
+        "Details": ""
+      }
+    ],
+    "EyeCenters": null,
+    "ProcessedSample": ""
+  }
+]

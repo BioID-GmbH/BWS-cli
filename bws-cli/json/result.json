@@ -1,0 +1,27 @@
+[
+  {
+    "Success": false,
+    "Error": "LiveDetectionFailed"
+  },
+  {
+    "Success": true,
+    "Action": "verification",
+    "BCID": "bws/112/112"
+  },
+  {
+    "Success": true,
+    "Action": "identification",
+    "BCID": "bws/112/112",
+    "Matches": [
+      {
+        "BCID": "bws/112/112",
+        "Score": 0.99402197321992558
+      }
+    ]
+  },
+  {
+    "Success": true,
+    "Action": "enrollment",
+    "BCID": "bws/112/112"
+  }
+]

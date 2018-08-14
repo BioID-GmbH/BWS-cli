@@ -1,0 +1,17 @@
+[
+  {
+    "Success": true,
+    "Matches": [
+      {
+        "Score": 0.99402197321992558,
+        "Storage": "bws",
+        "Partition": 112,
+        "ClassID": 123
+      }
+    ]
+  },
+  {
+    "Success": true,
+    "Error": "LiveDetectionFailed"
+  }
+]

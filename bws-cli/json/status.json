@@ -1,0 +1,42 @@
+{
+  "Version": "2.3",
+  "Label": "BWS 2.3.18128.4",
+  "Features": [
+    {
+      "Name": "QualityCheck",
+      "Traits": "Face,Periocular,Voice",
+      "Storage": null,
+      "Partitions": null
+    },
+    {
+      "Name": "LiveDetection",
+      "Traits": "Face,Periocular",
+      "Storage": null,
+      "Partitions": null
+    },
+    {
+      "Name": "Enrollment",
+      "Traits": "Face,Periocular,Voice",
+      "Storage": "bws",
+      "Partitions": "112"
+    },
+    {
+      "Name": "Verification",
+      "Traits": "Face,Periocular,Voice",
+      "Storage": "bws",
+      "Partitions": "112"
+    },
+    {
+      "Name": "Identification",
+      "Traits": "Face,Periocular,Voice",
+      "Storage": "bws",
+      "Partitions": "112"
+    },
+    {
+      "Name": "PhotoVerify",
+      "Traits": null,
+      "Storage": null,
+      "Partitions": null
+    }
+  ]
+}

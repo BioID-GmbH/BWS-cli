@@ -1,0 +1,10 @@
+[
+  {
+    "Accepted": true,
+    "Warnings": [ "ImageTooSmall" ]
+  },
+  {
+    "Accepted": false,
+    "Error": "SampleNotOfExpectedType"
+  }
+]
