@@ -1,0 +1,7 @@
+STORAGE: NONE
+RESTRICTION: == netcoreapp2.1
+NUGET
+  remote: https://www.nuget.org/api/v2
+    FSharp.Core (4.5.2)
+    FSharp.Data (3.0.0-beta4)
+      FSharp.Core (>= 4.3.4)

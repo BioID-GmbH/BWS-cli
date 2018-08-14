@@ -1,0 +1,6 @@
+storage: none
+framework: auto-detect
+
+source https://www.nuget.org/api/v2
+
+nuget FSharp.Data beta
