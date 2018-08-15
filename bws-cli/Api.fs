@@ -14,9 +14,6 @@ open Util
 
 [<Struct>] type Value = Value of string
 
-let True = true.ToString() |> Value
-let False = false.ToString() |> Value
-
 /// Warn about unknown status code for a given command.
 let unknown code =
     printfn "Unexpected status code: %i" code
@@ -52,9 +49,9 @@ let kwargse withEnv =
         | KwArg pair :: rest ->
             Some pair :: kwargs rest
         | Enabled setting :: rest ->
-            Some(Key setting, True) :: kwargs rest
+            Some(Key setting, Value "true") :: kwargs rest
         | Disabled setting :: rest ->
-            Some(Key setting, False) :: kwargs rest
+            Some(Key setting, Value "false") :: kwargs rest
         | TokenChoice(Long("verify" as task)) :: rest
         | TokenChoice(Long("enroll" as task)) :: rest
         | TokenChoice(Long("identify" as task)) :: rest
