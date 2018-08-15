@@ -109,7 +109,7 @@ let parse =
             r :: rest |> parse ({ acc with AppId = id }, args)
         | "--password" :: secret :: rest ->
             rest |> parse ({ acc with Secret = secret }, args)
-        | SingleDash 'p' r :: secret :: rest ->
+        | SingleDash 'w' r :: secret :: rest ->
             r :: rest |> parse ({ acc with Secret = secret }, args)
         | "--verbose" :: rest ->
             rest |> parse ({ acc with Verbosity = acc.Verbosity + 1 }, args)

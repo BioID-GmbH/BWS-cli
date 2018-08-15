@@ -267,7 +267,7 @@ Options:
    -s, --storage <loc>    give the storage to use
    -p, --partition <num>  give the partition to use
    -a, --app <id>         the application id for authorization
-   -p, --password <pw>    the application passport for authorization
+   -w, --password <pw>    the application passport for authorization
    -i, --interactive      drop into interactive mode after executing command
    -b, --print-body       print all JSON results
    -c, --clean-up         delete all classes created during the session at exit
