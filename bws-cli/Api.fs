@@ -14,11 +14,6 @@ open Util
 
 [<Struct>] type Value = Value of string
 
-/// Warn about unknown status code for a given command.
-let unknown code =
-    printfn "Unexpected status code: %i" code
-    RetCode.BwsError
-
 /// An environment that will collect/remember settings.
 let mutable env = Map.empty<Key, Value>
 
@@ -84,22 +79,6 @@ let kwargse withEnv =
 /// Parse a string list to a mapping of keys to values.
 let kwargs = kwargse true
 
-/// Warn about invalid keyword arguments for a given command.
-let invalidKwArgs arg =
-    printfn "Invalid or malformed keyword arguments for %s." arg
-    RetCode.ParameterError
-
-/// Gathers all requested tokens.
-let tokens = ResizeArray()
-
-/// Get the most recent token.
-let lastToken () =
-    if tokens.Count = 0 then
-        printfn "There was no token, you need to get one first."
-        []
-    else
-        [HttpRequestHeaders.Authorization("Bearer " + tokens.[tokens.Count - 1])]
-
 /// Print a text response together with the status code.
 let printBody code =
     let width = 80
@@ -147,11 +126,33 @@ let request (opts:Options) url headers query body =
         return re
     }
 
+/// Gathers all requested tokens.
+let tokens = ResizeArray()
+
+/// Get the most recent token.
+let lastToken printOrNot =
+    if tokens.Count = 0 then
+        Print.printfn printOrNot "There was no token, you need to get one first."
+        []
+    else
+        [HttpRequestHeaders.Authorization("Bearer " + tokens.[tokens.Count - 1])]
+
+/// Warn about invalid keyword arguments for a given command.
+let invalidKwArgs printOrNot arg =
+    Print.printfn printOrNot "Invalid or malformed keyword arguments for %s." arg
+    RetCode.ParameterError
+
+/// Warn about unknown status code for a given command.
+let unknown printOrNot code =
+    Print.printfn printOrNot "Unexpected status code: %i" code
+    RetCode.BwsError
+
 /// The handling of a enrol and verify result are similar. This is done here.
-let postUpload req cmd args = async {
+let postUpload printOrNot req cmd args = async {
+    let printfn fmt = Print.printfn printOrNot fmt
     match args with
     | Some query ->
-        let authHeader = lastToken()
+        let authHeader = lastToken printOrNot
         let! r = req authHeader query None
         match handleGeneral r, r.Body with
         | Some 200, Text text ->
@@ -169,20 +170,24 @@ let postUpload req cmd args = async {
         | Some 400, _ ->
             printfn "No samples were uploaded."
             return RetCode.BwsError
-        | Some other, _ -> return unknown other
+        | Some other, _ -> return unknown printOrNot other
         | None, _ -> return RetCode.BwsError
-    | None -> return invalidKwArgs cmd
+    | None -> return invalidKwArgs printOrNot cmd
 }
-
-/// Print out ambigous words when an abbreviation was not unique.
-let ambiguous words =
-    printfn "Ambiguous abbreviation, did you mean one of"
-    words |> String.concat ", " |> printfn "\t%s"
 
 /// This handles all commands that can be entered.
 let rec call (opts:Options) (remember:ResizeArray<string>) words = async {
-    let printf fmt = Print.printf (not opts.Quiet) fmt
-    let printfn fmt = Print.printfn (not opts.Quiet) fmt
+    let printSomething = not opts.Quiet
+    let printf fmt = Print.printf printSomething fmt
+    let printfn fmt = Print.printfn printSomething fmt
+    let unknown = unknown printSomething
+    let invalidKwArgs = invalidKwArgs printSomething
+
+    /// Print out ambigous words when an abbreviation was not unique.
+    let ambiguous words =
+        printfn "Ambiguous abbreviation, did you mean one of"
+        words |> String.concat ", " |> printfn "\t%s"
+
 
     match words with
     | [] -> printfn "Noop"; return RetCode.Ok
@@ -286,7 +291,7 @@ let rec call (opts:Options) (remember:ResizeArray<string>) words = async {
                     |> List.partition (glob >> Seq.isEmpty)
                 match args |> kwargs with
                 | Some query ->
-                    let authHeader = lastToken()
+                    let authHeader = lastToken printSomething
                     let! uploads =
                         files
                         |> Seq.collect glob
@@ -323,13 +328,13 @@ let rec call (opts:Options) (remember:ResizeArray<string>) words = async {
                 | None -> return invalidKwArgs cmd
             | "enroll" ->
                 remember.Add "."
-                return! args |> kwargs |> postUpload req cmd
+                return! args |> kwargs |> postUpload printSomething req cmd
             | "verify" ->
-                return! args |> kwargs |> postUpload req cmd
+                return! args |> kwargs |> postUpload printSomething req cmd
             | "identify" ->
                 match args |> kwargs with
                 | Some query ->
-                    let authHeader = lastToken()
+                    let authHeader = lastToken printSomething
                     let! r = req authHeader query None
                     match handleGeneral r, r.Body with
                     | Some 200, Text text ->
@@ -417,7 +422,7 @@ let rec call (opts:Options) (remember:ResizeArray<string>) words = async {
                         RetCode.ParameterError
                     )
             | "livenessdetection" ->
-                let authHeader = lastToken()
+                let authHeader = lastToken printSomething
                 let! r = req authHeader [] None
                 match handleGeneral r, r.Body with
                 | Some 200, Text text ->
