@@ -1,6 +1,6 @@
 # BWS-CLI
 
-[BioID GmbH][] provides a biometric web service *made in Germany*. To use our
+[BioID GmbH][bioid] provides a biometric web service *made in Germany*. To use our
 *privacy-enabled* [BWS][], your can resort to SOAP or a web API.
 
 This command line interface is both a test client as well as a demo for all
