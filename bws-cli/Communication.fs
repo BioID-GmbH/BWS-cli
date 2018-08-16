@@ -8,12 +8,13 @@ open Util
 [<Struct>] type Mime = Mime of string
 
 type RetCode =
-    | Ok = 0uy
-    | OkButNo = 1uy
-    | ProgramError = 2uy
-    | BwsError = 3uy
-    | CommandError = 4uy
-    | ParameterError = 5uy
+    | Ok = 0
+    | OkButNo = 1
+    | DidntExpect = 2
+    | ProgramError = 3
+    | BwsError = 4
+    | CommandError = 5
+    | ParameterError = 6
 
 /// Some commands always mean roughly the same. Let's handle them here.
 let handleGeneral (r:HttpResponse) =

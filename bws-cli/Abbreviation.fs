@@ -45,7 +45,7 @@ let lookup (where:AbbreviationList) (what:string) =
 
 /// Words for the tool itself.
 let myWords =
-    "set unset pause help documentation exit".Split ' '
+    "set unset pause help documentation exit expect".Split ' '
     |> Array.map Long
 
 /// Topics that help understands additionally.

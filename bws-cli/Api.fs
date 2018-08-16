@@ -14,6 +14,15 @@ open Util
 
 [<Struct>] type Value = Value of string
 
+type BwsAnswer =
+    | Return of RetCode
+    | Expect of RetCode
+    with
+        member me.Code =
+            match me with
+            | Return code -> code
+            | Expect code -> code
+
 /// An environment that will collect/remember settings.
 let mutable env = Map.empty<Key, Value>
 
@@ -140,12 +149,12 @@ let lastToken printOrNot =
 /// Warn about invalid keyword arguments for a given command.
 let invalidKwArgs printOrNot arg =
     Print.printfn printOrNot "Invalid or malformed keyword arguments for %s." arg
-    RetCode.ParameterError
+    Return RetCode.ParameterError
 
 /// Warn about unknown status code for a given command.
 let unknown printOrNot code =
     Print.printfn printOrNot "Unexpected status code: %i" code
-    RetCode.BwsError
+    Return RetCode.BwsError
 
 /// The handling of a enrol and verify result are similar. This is done here.
 let postUpload printOrNot req cmd args = async {
@@ -160,18 +169,18 @@ let postUpload printOrNot req cmd args = async {
             match json.Success, json.Error with
             | true, _ ->
                 printfn "%s was successful." cmd
-                return RetCode.Ok
+                return Return RetCode.Ok
             | false, None ->
                 printfn "Not recognized."
-                return RetCode.OkButNo
+                return Return RetCode.OkButNo
             | false, Some error ->
                 printfn "Couldn't enroll because %s." error
-                return RetCode.BwsError
+                return Return RetCode.BwsError
         | Some 400, _ ->
             printfn "No samples were uploaded."
-            return RetCode.BwsError
+            return Return RetCode.BwsError
         | Some other, _ -> return unknown printOrNot other
-        | None, _ -> return RetCode.BwsError
+        | None, _ -> return Return RetCode.BwsError
     | None -> return invalidKwArgs printOrNot cmd
 }
 
@@ -190,17 +199,17 @@ let rec call (opts:Options) (remember:ResizeArray<string>) words = async {
 
 
     match words with
-    | [] -> printfn "Noop"; return RetCode.Ok
+    | [] -> printfn "Noop"; return Return(RetCode.Ok)
     | cmd::args ->
         let recurse = call opts remember
         let basicAuth = HttpRequestHeaders.BasicAuth opts.AppId opts.Secret
         match cmd with
         | NoCommand cmd ->
             printfn "Don't know command %s." cmd
-            return RetCode.CommandError
+            return Return(RetCode.CommandError)
         | CommandCandidates words ->
             ambiguous words
-            return RetCode.CommandError
+            return Return(RetCode.CommandError)
         | Command(Long cmd) ->
             let req = request opts <| opts.Api cmd
             match cmd with
@@ -218,12 +227,12 @@ let rec call (opts:Options) (remember:ResizeArray<string>) words = async {
                             if opts.Verbosity >= 1 && not opts.PrintResponseBody then
                                 printfn "%s" text
                         | _ -> ()
-                        return RetCode.Ok
+                        return Return(RetCode.Ok)
                     | Some other -> return unknown other
-                    | None -> return RetCode.BwsError
+                    | None -> return Return(RetCode.BwsError)
                 | _ ->
                     printfn "%s doesn't take any arguments." cmd
-                    return RetCode.ParameterError
+                    return Return(RetCode.ParameterError)
             | "isenrolled" ->
                 let args =
                     match args with
@@ -239,18 +248,18 @@ let rec call (opts:Options) (remember:ResizeArray<string>) words = async {
                     match handleGeneral r with
                     | Some 200 ->
                         printfn "User with trait is available, verification is possible."
-                        return RetCode.Ok
+                        return Return(RetCode.Ok)
                     | Some 400 ->
                         printfn "Invalid BCID or trait."
-                        return RetCode.BwsError
+                        return Return(RetCode.BwsError)
                     | Some 404 ->
                         printfn "User not enrolled."
-                        return RetCode.OkButNo
+                        return Return(RetCode.OkButNo)
                     | Some other -> return unknown other
-                    | None -> return RetCode.BwsError
+                    | None -> return Return(RetCode.BwsError)
                 | _ ->
                     printfn "%s expects two arguments, a BCID and a trait." cmd
-                    return RetCode.ParameterError
+                    return Return(RetCode.ParameterError)
             | "token" ->
                 let args =
                     match args with
@@ -275,16 +284,16 @@ let rec call (opts:Options) (remember:ResizeArray<string>) words = async {
                             let decoded = Jwt.decode jwt
                             for i = 0 to 1 do
                                 printfn "%s" decoded.[i]
-                        return RetCode.Ok
+                        return Return(RetCode.Ok)
                     | Some 400, _ ->
                         printfn "Invalid BCID or trait."
-                        return RetCode.BwsError
+                        return Return(RetCode.BwsError)
                     | Some other, _ -> return unknown other
-                    | None, _ -> return RetCode.BwsError
+                    | None, _ -> return Return(RetCode.BwsError)
                 | Some(_, None) -> return invalidKwArgs cmd
                 | _ ->
                     printfn "%s expects one mandatory argument bcid followed by optional keyword arguments (name=value, no spaces)." cmd
-                    return RetCode.ParameterError
+                    return Return(RetCode.ParameterError)
             | "upload" ->
                 let args, files =
                     args
@@ -314,17 +323,17 @@ let rec call (opts:Options) (remember:ResizeArray<string>) words = async {
                                     | Some 400 ->
                                         printfn "'%s' is corrupt or not supported." name.Value
                                         RetCode.BwsError
-                                    | Some other -> unknown other
+                                    | Some other -> (unknown other).Code
                                     | None -> RetCode.BwsError
                                 )
                         })
                         |> Async.Parallel
 
-                    match uploads |> Array.tryFind ((<>)RetCode.Ok) with
+                    match uploads |> Array.tryFind ((<>)(RetCode.Ok)) with
                     | Some code ->
                         printfn "There were errors during upload."
-                        return code
-                    | _ -> return RetCode.Ok
+                        return Return code
+                    | _ -> return Return(RetCode.Ok)
                 | None -> return invalidKwArgs cmd
             | "enroll" ->
                 remember.Add "."
@@ -346,15 +355,15 @@ let rec call (opts:Options) (remember:ResizeArray<string>) words = async {
                                     m.Storage Options.BcidSeparator
                                     m.Partition Options.BcidSeparator
                                     m.ClassId
-                            return RetCode.Ok
+                            return Return(RetCode.Ok)
                         else
                             printfn "Identification unsuccessful because %s." json.Error.Value
-                            return RetCode.BwsError
+                            return Return(RetCode.BwsError)
                     | Some 400, _ ->
                         printfn "No samples were uploaded."
-                        return RetCode.BwsError
+                        return Return(RetCode.BwsError)
                     | Some other, _ -> return unknown other
-                    | None, _ -> return RetCode.BwsError
+                    | None, _ -> return Return(RetCode.BwsError)
                 | None -> return invalidKwArgs cmd
             | "result" ->
                 let query =
@@ -376,7 +385,7 @@ let rec call (opts:Options) (remember:ResizeArray<string>) words = async {
                         printf "Last biometric call was "
                         if not json.Success then
                             printfn "unsuccessful because %s." json.Error.Value
-                            return RetCode.BwsError
+                            return Return(RetCode.BwsError)
                         else
                             let lastCall = ("an " + json.Action.Value).Replace("n v", " v")
                             printfn "%s for BCID %s." lastCall json.Bcid.Value
@@ -384,12 +393,12 @@ let rec call (opts:Options) (remember:ResizeArray<string>) words = async {
                                 printfn "\nThe matches were:"
                                 for m in json.Matches do
                                     printfn "- %.17f for %s" m.Score m.Bcid
-                            return RetCode.Ok
+                            return Return(RetCode.Ok)
                     | Some other, _ -> return unknown other
-                    | None, _ -> return RetCode.BwsError
+                    | None, _ -> return Return(RetCode.BwsError)
                 | None ->
                     printfn "No token given and none available in history."
-                    return RetCode.BwsError
+                    return Return(RetCode.BwsError)
             | "deleteclass" ->
                 let bcid =
                     match args with
@@ -409,17 +418,17 @@ let rec call (opts:Options) (remember:ResizeArray<string>) words = async {
                         match handleGeneral r with
                         | Some 200 ->
                             printfn "BCID %s has been deleted." bcid
-                            RetCode.Ok
+                            Return RetCode.Ok
                         | Some 400 ->
                             printfn "Unknown BCID."
-                            RetCode.BwsError
+                            Return RetCode.BwsError
                         | Some other -> unknown other
-                        | None -> RetCode.BwsError
+                        | None -> Return RetCode.BwsError
                     )
                 | _ ->
                     return lock consoleLock (fun () ->
                         printfn "%s expects a single BCID to delete." cmd
-                        RetCode.ParameterError
+                        Return RetCode.ParameterError
                     )
             | "livenessdetection" ->
                 let authHeader = lastToken printSomething
@@ -429,12 +438,12 @@ let rec call (opts:Options) (remember:ResizeArray<string>) words = async {
                     let json = Json.LivenessDetection.Parse text
                     if json.Success then
                         printfn "You're alive."
-                        return RetCode.Ok
+                        return Return(RetCode.Ok)
                     else
                         printfn "Liveness detection failed because %s." json.Error.Value
-                        return RetCode.BwsError
+                        return Return(RetCode.BwsError)
                 | Some other, _ -> return unknown other
-                | None, _ -> return RetCode.BwsError
+                | None, _ -> return Return(RetCode.BwsError)
             | "livedetection" ->
                 let images =
                     args
@@ -460,19 +469,19 @@ let rec call (opts:Options) (remember:ResizeArray<string>) words = async {
                     match handleGeneral r, r.Body with
                     | Some 200, Text "true" ->
                         printfn "Live person."
-                        return RetCode.Ok
+                        return Return(RetCode.Ok)
                     | Some 200, Text "false" ->
                         printfn "Not a live person."
-                        return RetCode.OkButNo
+                        return Return(RetCode.OkButNo)
                     | Some 400, Text text ->
                         let json = Json.LiveDetection.Parse text
                         printfn "BWS replied with error %s." json.Message
-                        return RetCode.BwsError
+                        return Return(RetCode.BwsError)
                     | Some other, _ -> return unknown other
-                    | None, _ -> return RetCode.BwsError
+                    | None, _ -> return Return(RetCode.BwsError)
                 else
                     printfn "Exactly two images expected."
-                    return RetCode.ParameterError
+                    return Return(RetCode.ParameterError)
             | "qualitycheck" ->
                 let args, files =
                     args |> List.partition (glob >> Seq.isEmpty)
@@ -515,17 +524,17 @@ let rec call (opts:Options) (remember:ResizeArray<string>) words = async {
                                 do! File.WriteAllBytesAsync(fname, contents) |> Async.AwaitTask
                                 printfn "Wrote %s." fname
                             | None -> ()
-                            return RetCode.Ok
+                            return Return(RetCode.Ok)
                         else
                             printfn "Quality check failed."
                             showErrors json
-                            return RetCode.BwsError
+                            return Return(RetCode.BwsError)
                     | Some other, _ -> return unknown other
-                    | None, _ -> return RetCode.BwsError
-                | _, None -> return RetCode.ParameterError
+                    | None, _ -> return Return(RetCode.BwsError)
+                | _, None -> return Return(RetCode.ParameterError)
                 | _ ->
                     printfn "%s expects exactly one image." cmd
-                    return RetCode.ProgramError
+                    return Return(RetCode.ProgramError)
             | "photoverify" ->
                 let nofiles, files =
                     args |> List.partition (glob >> Seq.isEmpty)
@@ -566,13 +575,13 @@ let rec call (opts:Options) (remember:ResizeArray<string>) words = async {
                             levels
                             |> List.map (fun l -> recurse (cmd :: (sprintf "accuracy=%i" l) :: globbed))
                             |> Async.Parallel
-                        match sub |> Array.tryFindIndex ((=) RetCode.Ok) with
+                        match sub |> Array.tryFindIndex ((=) (Return RetCode.Ok)) with
                         | Some i ->
                             printfn "Got accepted up to level %i." levels.[i]
-                            return RetCode.Ok
+                            return Return(RetCode.Ok)
                         | _ ->
                             printfn "No success even with the worst level."
-                            return RetCode.OkButNo
+                            return Return(RetCode.OkButNo)
                     else
                         let! r =
                             Http.AsyncRequest(opts.Api cmd, fromKvList query, [basicAuth],
@@ -583,19 +592,33 @@ let rec call (opts:Options) (remember:ResizeArray<string>) words = async {
                         match handleGeneral r, r.Body with
                         | Some 200, Text "true" ->
                             printfn "Live images match the id photo wrt. confidence level %s." level
-                            return RetCode.Ok
+                            return Return(RetCode.Ok)
                         | Some 200, Text "false" ->
                             printfn "The live images don't match the id photo wrt. the demanded confidence level %s." level
-                            return RetCode.OkButNo
+                            return Return(RetCode.OkButNo)
                         | _, Text text ->
                             let json = Json.PhotoVerify.Parse text
                             printfn "BWS returned error %s." json.Message
-                            return RetCode.BwsError
-                        | _ -> return RetCode.BwsError
-                | _, None -> return RetCode.ParameterError
+                            return Return(RetCode.BwsError)
+                        | _ -> return Return(RetCode.BwsError)
+                | _, None -> return Return(RetCode.ParameterError)
                 | _ ->
                     printfn "%s expects exactly 3 images, the first being from the passport." cmd
-                    return RetCode.ParameterError
+                    return Return(RetCode.ParameterError)
+            | "expect" ->
+                match args with
+                | [AnInt ec] ->
+                    if not <| Enum.IsDefined(typeof<RetCode>, ec) then
+                        printfn "Warning: The return code you expect is not defined. Possible values are:"
+                        let nums = Enum.GetValues typeof<RetCode> |> Seq.cast<int>
+                        let nams = Enum.GetNames typeof<RetCode>
+                        Seq.zip nums nams
+                        |> Seq.iter (uncurry2 (printfn "\t%3i: %s"))
+                        printfn ""
+                    return Expect(enum ec)
+                | _ ->
+                    printfn "%s expects exactly one int (%i to %i) to check." cmd Byte.MinValue Byte.MaxValue
+                    return Return(RetCode.ParameterError)
             | "set" ->
                 match args |> kwargse false with
                 | Some [] ->
@@ -604,21 +627,21 @@ let rec call (opts:Options) (remember:ResizeArray<string>) words = async {
                     else
                         printfn "Settings:"
                         env |> Map.iter (fun (Key k) (Value v) -> printfn "- %s=%s" k v)
-                    return RetCode.Ok
+                    return Return(RetCode.Ok)
                 | Some list ->
                     for key, value in list do
                         env <- env |> Map.add key value
-                    return RetCode.Ok
+                    return Return(RetCode.Ok)
                 | None -> return invalidKwArgs cmd
             | "unset" ->
                 match args with
                 | [] ->
                     env <- Map.empty
-                    return RetCode.Ok
+                    return Return(RetCode.Ok)
                 | list ->
                     for key in list do
                         env <- env |> Map.remove (Key key)
-                    return RetCode.Ok
+                    return Return(RetCode.Ok)
             | "pause" ->
                 let ms =
                     match args with
@@ -626,37 +649,37 @@ let rec call (opts:Options) (remember:ResizeArray<string>) words = async {
                     | _ -> 500
                 printfn "Sleeping for %i milliseconds..." ms
                 do! Async.Sleep ms
-                return RetCode.Ok
+                return Return(RetCode.Ok)
             | "documentation" ->
                 match args with
                 | [] ->
                     let url = docsUrl(Long "")
                     let pi = ProcessStartInfo(url, UseShellExecute=true)
                     Process.Start pi |> ignore
-                    return RetCode.Ok
+                    return Return(RetCode.Ok)
                 | [Command command] when myWords |> Array.contains command ->
                     let (Long str) = command
                     printfn "%s is not a BWS web API command, so there's no documentation." str
-                    return RetCode.ParameterError
+                    return Return(RetCode.ParameterError)
                 | [Command command] ->
                     let url = docsUrl command
                     let pi = ProcessStartInfo(url, UseShellExecute=true)
                     Process.Start pi |> ignore
-                    return RetCode.Ok
+                    return Return(RetCode.Ok)
                 | [CommandCandidates words] ->
                     ambiguous words
-                    return RetCode.ParameterError
+                    return Return(RetCode.ParameterError)
                 | [NoCommand command] ->
                     printfn "%s is not a known command." command
-                    return RetCode.ParameterError
+                    return Return(RetCode.ParameterError)
                 | _ ->
                     printfn "%s expects exactly one command to get help for." cmd
-                    return RetCode.ParameterError
+                    return Return(RetCode.ParameterError)
             | "help" ->
                 match args with
                 | [] ->
                     printfn "%s" Help.general
-                    return RetCode.Ok
+                    return Return(RetCode.Ok)
                 | [HelpTopic(Long topic)] ->
                     match topic with
                     | Command(Long command) ->
@@ -665,19 +688,19 @@ let rec call (opts:Options) (remember:ResizeArray<string>) words = async {
                     | _ ->
                         printfn "\n--- About %s ---\n" topic
                         Help.specific |> Map.find topic |> printfn "%s\n"
-                    return RetCode.Ok
+                    return Return(RetCode.Ok)
                 | [HelpCandidates words] ->
                     ambiguous words
-                    return RetCode.ParameterError
+                    return Return(RetCode.ParameterError)
                 | [NoHelp word] ->
                     printfn "Don't know anything about %s." word
-                    return RetCode.ParameterError
+                    return Return(RetCode.ParameterError)
                 | _ ->
                     printfn "%s expects exactly one command to get help for." cmd
-                    return RetCode.ParameterError
+                    return Return(RetCode.ParameterError)
             | cmd ->
                 printfn "Command %s no handled." cmd
-                return RetCode.CommandError
+                return Return(RetCode.CommandError)
     }
 
         
