@@ -25,11 +25,12 @@ Tool specific:
    set                 Set a variable that is passed with every call.
    unset               Unset one or all variables.
    pause               Pause for some given milliseconds (default: 500).
+   expect              Check return value of previous call.
    documentation       Launch a browser with the official documentation.
    exit                Quit interactive mode.
 
 You can also try help on these general topics: <workflow>, <authorization>,
-<bcid>, <tool>, <shortcuts> and <examples>.
+<bcid>, <tool>, <errorcode>, <shortcuts> and <examples>.
 status--------------------------------------------------------------------------
 Not much to say, just prints status information. If you want to see more, start
 with --verbose option.
@@ -307,15 +308,43 @@ setting+ or setting- is understood.
 
 Example call: enroll livedetection+
 examples------------------------------------------------------------------------
-token 123 enroll
-enroll enroll?.png
-pause
-token 123 v livedetection-
-verify ver*.jpg
+   token 123 enroll
+   enroll enroll?.png
+   pause
+   token 123 identify livedetection-
+   identify current.jpg
 
 This enrolls all PNG files matching the pattern to a BCID ending in 123. After
-giving the BWS a little time to think, a verification is done with different
-images where we don't care whether they depict a live person or not.
+giving the BWS a little time to think, and an identification is done with
+another image.
+
+                    ----------------------------------------
+
+   token 123 verify
+   verify other-person?.png
+
+   # The verification should fail.
+   expect 1
+
+   token 123 verify
+   verify correct-person?.png
+
+Verify images against the 123 BCID. We expect that this verification fails and
+continue only in that case. After that another person is checked and the result is
+returned to the shell.
+expect--------------------------------------------------------------------------
+Checks the return code of the previous operation. If that matches the argument
+of expect the execution is continued. If not processing is stopped and the last
+return code is returned to the shell.
+
+Example call: expect 1
+
+This after a <verify> call means that we expect the verification to be not
+successful.
+
+Also if the expectation is true that return code is cleared, whatever it was
+before. See <errorcode> for available numbers.
+errorcode-----------------------------------------------------------------------
 exit----------------------------------------------------------------------------
 Exit interactive mode and return to the command line.
 
