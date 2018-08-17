@@ -112,7 +112,7 @@ let main argv =
                 let mutable stop = false
                 while enm.MoveNext() && not stop do
                     match prev, enm.Current with
-                    | Some (Return code), Expect exp ->
+                    | Some (Code code), Expect exp ->
                         if code = exp then
                             printfn "Expectation matched."
                             yield RetCode.Ok
@@ -124,12 +124,12 @@ let main argv =
                                 printfn ", exiting..."
                             stop <- true
                             yield code
-                    | Some (Return code), Return _ ->
+                    | Some (Code code), Code _ ->
                         yield code
                     | _ -> ()
                     prev <- Some enm.Current
                 match stop, prev with
-                | false, Some (Return code) -> yield code
+                | false, Some (Code code) -> yield code
                 | _ -> ()
             }
 
