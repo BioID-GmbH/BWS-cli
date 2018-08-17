@@ -75,7 +75,7 @@ let main argv =
                         printfn "--- Interactive BWS console"
                         consoleLines args
                     else
-                        [args] :> _
+                        Seq.singleton args
                 )
                 // Split a multi-line string into lines.
                 |> Seq.map split
