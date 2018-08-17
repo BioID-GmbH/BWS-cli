@@ -10,26 +10,25 @@ open Util
 type RetCode =
     | Ok = 0
     | OkButNo = 1
-    | DidntExpect = 2
-    | ProgramError = 3
-    | BwsError = 4
-    | CommandError = 5
-    | ParameterError = 6
+    | Unauthorized = 2
+    | CommandError = 3
+    | ParameterError = 4
+    | BwsError = 5
 
 /// Some commands always mean roughly the same. Let's handle them here.
 let handleGeneral (r:HttpResponse) =
     match r.StatusCode with
     | 401 ->
         printfn "No or invalid authentication header (basic or JWT)."
-        None
+        Choice2Of2 RetCode.Unauthorized
     | 403 ->
         printfn "Access denied (wrong/expired token or password)."
-        None
+        Choice2Of2 RetCode.Unauthorized
     | 500 ->
         printfn "Internal server error."
-        None
+        Choice2Of2 RetCode.BwsError
     | id ->
-        Some id
+        Choice1Of2 id
 
 /// Get a (MIME, path) tuple from the extension.
 let mime pname =

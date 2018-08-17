@@ -31,7 +31,7 @@ let main argv =
     if opts.AppId = Options.Default.AppId || opts.Secret = Options.Default.Secret then
         eprintfn "\nERROR: Both application id and secret need to be passed to connect to BWS!\n"
         Help.specific.["tool"] |> eprintfn "%s"
-        int RetCode.ProgramError
+        int RetCode.Unauthorized
     else
         let args, opts =
             if List.isEmpty args then
