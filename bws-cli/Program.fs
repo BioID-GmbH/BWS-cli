@@ -3,6 +3,7 @@
 open System
 open System.Text.RegularExpressions
 open Abbreviation
+open Api
 open CommandLine
 open ReturnCodes
 open Util
@@ -98,16 +99,49 @@ let main argv =
         let bcids = ResizeArray<string>()
 
         try
-            // We can only return a single error code. I decided for the first one.
-            let firstBad =
+            let bwsResults =
                 input
                 // This is the meat of the program.
                 |> Seq.map (Api.call opts bcids)
                 // We cannot mix or overlap commands, because they probably depend on each other.
                 |> Seq.map Async.RunSynchronously
+            
+            let combine (source:seq<_>) = seq {
+                use enm = source.GetEnumerator()
+                let mutable prev = None
+                let mutable stop = false
+                while enm.MoveNext() && not stop do
+                    match prev, enm.Current with
+                    | Some (Return code), Expect exp ->
+                        if code = exp then
+                            printfn "Expectation matched."
+                            yield RetCode.Ok
+                        else
+                            printf "Expected %O but got %O" exp code
+                            if opts.Interactive then
+                                printfn "."
+                            else
+                                printfn ", exiting..."
+                            stop <- true
+                            yield code
+                    | Some (Return code), Return _ ->
+                        yield code
+                    | _ -> ()
+                    prev <- Some enm.Current
+                match stop, prev with
+                | false, Some (Return code) -> yield code
+                | _ -> ()
+            }
+
+            let combined = bwsResults |> combine
+
+            // We can only return a single error code. I decided for the first one.
+            let firstBad =
+                combined
                 // Why list? Because I want to evaluate everything, but Seq is lazy.
                 |> Seq.toList
                 |> List.tryFind ((<>)RetCode.Ok)
+            
             match firstBad with
             | Some code ->
                 Debuggy.WriteLine("Exiting with %O (%i).", code, int code)
