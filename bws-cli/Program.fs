@@ -138,11 +138,10 @@ let main argv =
                     | _ -> ()
                 }
 
-                let combined = bwsResults |> combine
-
                 // We can only return a single error code. I decided for the first one.
                 let firstBad =
-                    combined
+                    bwsResults
+                    |> combine
                     // Why list? Because I want to evaluate everything, but Seq is lazy.
                     |> Seq.toList
                     |> List.tryFind ((<>)RetCode.Ok)
