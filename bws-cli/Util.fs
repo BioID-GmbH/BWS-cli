@@ -15,9 +15,6 @@ let (><) f a b = f b a
 /// Uncurry a function for a tuple.
 let uncurry2 f (a, b) = f a b
 
-/// Regex match operator.
-let (=~) str (regex:Regex) = regex.IsMatch str
-
 let (|AnInt|_|) (str:string) =
     match Int32.TryParse str with
     | true, parsed -> Some parsed

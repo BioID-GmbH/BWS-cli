@@ -61,9 +61,9 @@ let kwargse withEnv =
         | TokenChoice(Long("identify" as task)) :: rest
         | TokenChoice(Long("livenessdetection" as task)) :: rest ->
             Some(Key "task", Value task) :: kwargs rest
-        | treit :: rest when treit =~ rtrait ->
+        | treit :: rest when rtrait.IsMatch treit ->
             Some(Key "trait", Value treit) :: kwargs rest
-        | treit :: rest when treit =~ traits ->
+        | treit :: rest when traits.IsMatch treit ->
             Some(Key "traits", Value treit) :: kwargs rest
         | problem :: rest ->
             printfn "Cannot parse argument '%s'." problem
