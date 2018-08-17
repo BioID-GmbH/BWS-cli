@@ -34,11 +34,12 @@ Tool specific:
    set                 Set a variable that is passed with every call.
    unset               Unset one or all variables.
    pause               Pause for some given milliseconds (default: 500).
+   expect              Check return value of previous call.
    documentation       Launch a browser with the official documentation.
    exit                Quit interactive mode.
 
 You can also try help on these general topics: <workflow>, <authorization>,
-<bcid>, <tool>, <shortcuts> and <examples>."""
+<bcid>, <tool>, <errorcode>, <shortcuts> and <examples>."""
 
 let specific =
     [
@@ -95,21 +96,60 @@ livedetection{+|-}   Enable or disable live detection (2+ images needed).
                         Attention: Disabling will have no effect if it was
                         enabled for the token!
 """
-    "examples", """token 123 enroll
-enroll enroll?.png
-pause
-token 123 v livedetection-
-verify ver*.jpg
+    "errorcode", """This is most useful for piping a file with commands into the <tool>. When the
+execution is finished, the first non-zero error code is returned to the shell.
+
+These are the exit codes that are defined:
+0: Ok
+1: OkButNo          Failed verification/livenessdetection or user unknown.
+2: Unauthorized     Missing/wrong/stale authentication.
+3: CommandError     Unknown command entered.
+4: ParameterError   Command was recognized, but the parameters had errors.
+5: BwsError         The BWS returned an error. See --print-body in <help tool>.
+
+To get a success return code when you were expecting a non-zero code, see
+<expect> command."""
+    "examples", """   token 123 enroll
+   enroll enroll?.png
+   pause
+   token 123 identify livedetection-
+   identify current.jpg
 
 This enrolls all PNG files matching the pattern to a BCID ending in 123. After
-giving the BWS a little time to think, a verification is done with different
-images where we don't care whether they depict a live person or not."""
+giving the BWS a little time to think, and an identification is done with
+another image.
+
+                    ----------------------------------------
+
+   token 123 verify
+   verify other-person?.png
+
+   # The verification should fail.
+   expect 1
+
+   token 123 verify
+   verify correct-person?.png
+
+Verify images against the 123 BCID. We expect that this verification fails and
+continue only in that case. After that another person is checked and the result is
+returned to the shell."""
     "exit", """Exit interactive mode and return to the command line.
 
 An exit code of 0 indicates that everything went well and a possible live
 detection or verification succeeded. An error code of 1 means there were no
 errors, but a result was negative, e.g. a failed verification. Larger exit codes
 mean errors in usage or from the BWS."""
+    "expect", """Checks the return code of the previous operation. If that matches the argument
+of expect the execution is continued. If not processing is stopped and the last
+return code is returned to the shell.
+
+Example call: expect 1
+
+This after a <verify> call means that we expect the verification to be not
+successful.
+
+Also if the expectation is true that return code is cleared, whatever it was
+before. See <errorcode> for available numbers."""
     "help", """I'm helping already, am I not?"""
     "identify", """Identify which classes the uploaded images most likely belong to. The result is
 a list of classes with decreasing confidence.
@@ -272,7 +312,7 @@ Options:
    -s, --storage <loc>    give the storage to use
    -p, --partition <num>  give the partition to use
    -a, --app <id>         the application id for authorization
-   -p, --password <pw>    the application passport for authorization
+   -w, --password <pw>    the application passport for authorization
    -i, --interactive      drop into interactive mode after executing command
    -b, --print-body       print all JSON results
    -c, --clean-up         delete all classes created during the session at exit
