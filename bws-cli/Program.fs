@@ -111,10 +111,10 @@ let main argv =
                     |> Seq.map Async.RunSynchronously
             
                 let combine (source:seq<_>) = seq {
-                    use enm = source.GetEnumerator()
                     let mutable prev = None
                     let mutable stop = false
-                    while enm.MoveNext() && not stop do
+                    use enm = source.GetEnumerator()
+                    while not stop && enm.MoveNext() do
                         match prev, enm.Current with
                         | Some (Code code), Expect exp ->
                             if code = exp then
@@ -128,12 +128,13 @@ let main argv =
                                     printfn ", exiting..."
                                 stop <- true
                                 yield code
-                        | Some (Code code), Code _ ->
+                        | Some (Code code), _ ->
                             yield code
                         | _ -> ()
                         prev <- Some enm.Current
-                    match stop, prev with
-                    | false, Some (Code code) -> yield code
+
+                    match prev, stop with
+                    | Some (Code code), false -> yield code
                     | _ -> ()
                 }
 
