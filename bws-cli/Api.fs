@@ -534,7 +534,7 @@ let rec call (opts:Options) (remember:ResizeArray<string>) words = async {
                 | _, None -> return Return(RetCode.ParameterError)
                 | _ ->
                     printfn "%s expects exactly one image." cmd
-                    return Return(RetCode.ProgramError)
+                    return Return(RetCode.ParameterError)
             | "photoverify" ->
                 let nofiles, files =
                     args |> List.partition (glob >> Seq.isEmpty)
