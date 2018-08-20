@@ -496,7 +496,7 @@ let rec call (opts:Options) (remember:ResizeArray<string>) words = async {
                     let! dataurl = dataUrl mime path
                     let! r =
                         Http.AsyncRequest(opts.Api cmd, fromKvList query, [basicAuth],
-                            body=TextRequest dataurl)
+                            body=TextRequest dataurl, silentHttpErrors=true)
                     Debuggy.WriteLine r.ResponseUrl
                     if opts.PrintResponseBody then
                         printBody r.StatusCode r.Body
