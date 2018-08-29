@@ -10,7 +10,7 @@ open Util
 
 /// Split a string/line into words, eating all whitespace.
 let split =
-    let re = Regex(@"""[^""]*""|[^ ]+", RegexOptions.Compiled)
+    let re = Regex(@"([""'])[^\1]*\1|[^ ]+", RegexOptions.Compiled)
     fun str -> [
         for m in re.Matches str do
             let inner = m.Value.Trim '"'
