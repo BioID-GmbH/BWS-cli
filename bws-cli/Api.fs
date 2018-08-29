@@ -197,7 +197,6 @@ let rec call (opts:Options) (remember:ResizeArray<string>) words = async {
         printfn "Ambiguous abbreviation, did you mean one of"
         words |> String.concat ", " |> printfn "\t%s"
 
-
     match words with
     | [] -> printfn "Noop"; return Code RetCode.Ok
     | cmd::args ->

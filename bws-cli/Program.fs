@@ -10,11 +10,13 @@ open Util
 
 /// Split a string/line into words, eating all whitespace.
 let split =
-    let re = Regex(@"\s+", RegexOptions.Compiled)
-    fun str ->
-        re.Split str
-        |> Array.filter (String.length >> (>) >< 0)
-        |> Array.toList
+    let re = Regex(@"""[^""]*""|[^ ]+", RegexOptions.Compiled)
+    fun str -> [
+        for m in re.Matches str do
+            let inner = m.Value.Trim '"'
+            if inner.Length > 0 then
+                yield inner
+    ]
 
 /// Filter comments and empty lines.
 let notComments : words:string list -> bool = function
