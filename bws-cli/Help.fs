@@ -122,7 +122,7 @@ another image.
                     ----------------------------------------
 
    token 123 verify
-   verify other-person?.png
+   verify "other person?.png"
 
    # The verification should fail.
    expect 1
@@ -131,8 +131,8 @@ another image.
    verify correct-person?.png
 
 Verify images against the 123 BCID. We expect that this verification fails and
-continue only in that case. After that another person is checked and the result is
-returned to the shell."""
+continue only in that case. After that another person is checked and the result
+is returned to the shell."""
     "exit", """Exit interactive mode and return to the command line.
 
 An exit code of 0 indicates that everything went well and a possible live
@@ -200,7 +200,7 @@ Optional parameters:
 """
     "qualitycheck", """Checks the quality of an image wrt. biometric compatibility.
 
-Example call: qualitycheck issuer=BioID
+Example call: qualitycheck issuer=BioID face.bmp
 
 Optional parameters:
    full{+|-}            If true (default) work in full document mode, otherwise
