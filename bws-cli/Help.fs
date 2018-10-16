@@ -307,7 +307,7 @@ livedetection{+|-}   Enable or disable live detection (2+ images needed).
 Options:
    -h, --help             show this help message and exit
    -v, --verbose          be more verbose, even more with -vv
-   -q, --quiet            reduce outut to a minimum
+   -q, --quiet            reduce output to a minimum
    -e, --endpoint <url>   the endpoint to connect to
    -s, --storage <loc>    give the storage to use
    -p, --partition <num>  give the partition to use

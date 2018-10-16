@@ -111,7 +111,7 @@ let main argv =
                     |> Seq.map (Api.call opts bcids)
                     // We cannot mix or overlap commands, because they probably depend on each other.
                     |> Seq.map Async.RunSynchronously
-            
+
                 let combine (source:seq<_>) = seq {
                     let mutable prev = None
                     let mutable stop = false
@@ -147,7 +147,7 @@ let main argv =
                     // Why list? Because I want to evaluate everything, but Seq is lazy.
                     |> Seq.toList
                     |> List.tryFind ((<>)RetCode.Ok)
-            
+
                 match firstBad with
                 | Some code ->
                     Debuggy.WriteLine("Exiting with %O (%i).", code, int code)
