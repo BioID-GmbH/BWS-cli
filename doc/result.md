@@ -9,4 +9,4 @@ Usage: `result`
 
 ---
 
-Back to [TOC](./toc.md), [official docs](https://developer.bioid.com/bwsreference/web-api/web-result-api)
+Back to [TOC](./toc.md), ([official docs](https://developer.bioid.com/bwsreference/web-api/web-result-api))

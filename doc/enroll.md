@@ -14,4 +14,4 @@ Optional parameters:
 
 ---
 
-Back to [TOC](./toc.md), [official docs](https://developer.bioid.com/bwsreference/web-api/web-enroll-api)
+Back to [TOC](./toc.md), ([official docs](https://developer.bioid.com/bwsreference/web-api/web-enroll-api))

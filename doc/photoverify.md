@@ -15,4 +15,4 @@ Optional parameters:
 
 ---
 
-Back to [TOC](./toc.md), [official docs](https://developer.bioid.com/bwsreference/web-api/web-photo-verify-api)
+Back to [TOC](./toc.md), ([official docs](https://developer.bioid.com/bwsreference/web-api/web-photo-verify-api))
