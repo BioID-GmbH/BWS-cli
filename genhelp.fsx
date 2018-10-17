@@ -107,6 +107,7 @@ let markdownify =
     let newlines = Regex(@":\r?\n", RegexOptions.Compiled ||| RegexOptions.Multiline)
     let examplecall = Regex(@"Example( call)?: (.*)", RegexOptions.Compiled ||| RegexOptions.IgnoreCase)
     let codeSpaces = Regex("^   ", RegexOptions.Compiled ||| RegexOptions.Multiline)
+    let errorCodes = Regex("^(\d): (\w+) +(.*)", RegexOptions.Compiled ||| RegexOptions.Multiline)
     fun (str:string) ->
         let a =
             links.Replace(str, fun m ->
@@ -115,7 +116,8 @@ let markdownify =
         let b = newlines.Replace(a, fun m -> m.Groups.[0].Value + nl)
         let c = examplecall.Replace(b, "Example$1: `$2`" + nl)
         let d = codeSpaces.Replace(c, "    ")
-        d
+        let e = errorCodes.Replace(d, fun m -> sprintf "%s. **%s**  \n  %s" m.Groups.[1].Value m.Groups.[2].Value m.Groups.[3].Value)
+        e
 
 let toc =
     stamped
