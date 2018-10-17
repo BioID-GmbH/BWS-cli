@@ -142,6 +142,7 @@ stamped
             use writer = new StreamWriter(md)
             do! writer.AsyncWriteLine "# Table of Contents"
             do! writer.AsyncWriteLine ""
+            do! writer.AsyncWriteLine "These are the topics that you can ask for help on.\n"
             do! writer.AsyncWrite toc
             do! writer.AsyncWriteLine nl
             return! writer.AsyncWrite <| sprintf "*([official docs](%s))*" (Abbreviation.docsUrl <| Abbreviation.Long "")

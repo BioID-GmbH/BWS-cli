@@ -1,5 +1,7 @@
 # Table of Contents
 
+These are the topics that you can ask for help on.
+
 - [authorization](./authorization.md)
 - [bcid](./bcid.md)
 - [deleteclass](./deleteclass.md)
