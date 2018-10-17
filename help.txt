@@ -39,7 +39,7 @@ Usage: status
 deleteclass---------------------------------------------------------------------
 Deletes all data associated with a BCID, which is the only mandatory parameter.
 plivedetection------------------------------------------------------------------
-livedetection{+|-}   Enable or disable live detection (2+ images needed).
+   livedetection{+|-}   Enable or disable live detection (2+ images needed).
 
                         Attention: Disabling will have no effect if it was
                         enabled for the token!

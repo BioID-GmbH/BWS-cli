@@ -1,5 +1,10 @@
 ﻿open System
+open System.IO
 open System.Text.RegularExpressions
+
+type System.IO.StreamWriter with
+    member me.AsyncWrite (value:string) = me.WriteAsync value |> Async.AwaitTask
+    member me.AsyncWriteLine (value:string) = me.WriteLineAsync value |> Async.AwaitTask
 
 type Topic = string
 type Topics = Map<Topic, string>
@@ -86,8 +91,57 @@ let general = %s
 
 printfn "let specific =%s%s[" nl four
 for kv in stamped do
+    assert(kv.Key.ToCharArray() |> Array.forall Char.IsLower)
     if kv.Key = "tool" then
         printfn """%s"%s", %s%s%s.Replace("#tool#", Process.GetCurrentProcess().MainModule.FileName |> Path.GetFileName)""" four kv.Key three kv.Value three
     elif kv.Key <> "" then
         printfn """%s"%s", %s%s%s""" four kv.Key three kv.Value three
 printfn "%s] |> Map.ofList" four
+
+let doc = DirectoryInfo "doc"
+if not doc.Exists then
+    doc.Create()
+
+let markdownify =
+    let links = Regex(@"\<(\w+)\>", RegexOptions.Compiled)
+    fun (str:string) ->
+        links.Replace(str, fun m ->
+            sprintf "[%s](./%s.md)" m.Groups.[1].Value (m.Groups.[1].Value.ToLowerInvariant())
+        )
+
+let toc =
+    stamped
+    |> Map.toList
+    |> List.map fst
+    |> List.filter ((<>) "")
+    |> List.sort
+    |> List.map (fun entry -> String.Format("- [{0}](./{0}.md)", entry))
+    |> String.concat Environment.NewLine
+
+stamped
+|> Map.toList
+|> List.choose (fun (key, value) ->
+    if key = "" then
+        Some(async {
+            use md = File.Open(Path.Combine(doc.FullName, "toc.md"), FileMode.Create)
+            use writer = new StreamWriter(md)
+            do! writer.AsyncWriteLine "# Table of Contents"
+            do! writer.AsyncWriteLine ""
+            return! writer.AsyncWrite toc
+        })
+    elif List.contains key ["help"; "plivedetection"] then
+        None
+    else
+        Some(async {
+            use md = File.Open(Path.Combine(doc.FullName, key + ".md"), FileMode.Create)
+            use writer = new StreamWriter(md)
+            let markdown =
+                if key = "tool" then value else
+                value |> markdownify
+            do! writer.AsyncWriteLine markdown
+            return! writer.AsyncWrite <| String.Format("{0}---{0}{0}Back to [TOC](./toc.md)", Environment.NewLine)
+        })
+)
+|> Async.Parallel
+|> Async.RunSynchronously
+|> ignore
