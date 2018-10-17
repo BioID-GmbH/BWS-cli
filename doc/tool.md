@@ -1,6 +1,7 @@
 Usage: #tool# [options] [command]
 
 Options:  
+<PRE>
    -h, --help             show this help message and exit  
    -v, --verbose          be more verbose, even more with -vv  
    -q, --quiet            reduce output to a minimum  
@@ -13,3 +14,4 @@ Options:
    -b, --print-body       print all JSON results  
    -c, --clean-up         delete all classes created during the session at exit  
    -o, --output <file>    filename for the result of a quality check  
+</PRE>

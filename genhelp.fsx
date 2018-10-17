@@ -144,10 +144,12 @@ stamped
                 for line in value.Split '\n' do
                     let line = line.TrimEnd '\r'
                     do! writer.AsyncWrite <| line
-                    if line.EndsWith(":", StringComparison.InvariantCulture)
-                    || line.StartsWith(" ", StringComparison.InvariantCulture) then
+                    if line.EndsWith(":", StringComparison.InvariantCulture) then
+                        do! writer.AsyncWrite "  \n<PRE>"
+                    elif line.StartsWith(" ", StringComparison.InvariantCulture) then
                         do! writer.AsyncWrite "  "
-                    return! writer.AsyncWriteLine ""
+                    do! writer.AsyncWriteLine ""
+                return! writer.AsyncWriteLine "</PRE>"
             else
                 let markdown =
                     value |> markdownify
