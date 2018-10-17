@@ -6,4 +6,4 @@ Usage: `livenessdetection`
 
 ---
 
-Back to [TOC](./toc.md), ([official docs](https://developer.bioid.com/bwsreference/web-api/web-livenessdetection-api))
+Back to [TOC](./toc.md), *([official docs](https://developer.bioid.com/bwsreference/web-api/web-livenessdetection-api))*

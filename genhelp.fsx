@@ -165,7 +165,7 @@ stamped
                 do! writer.AsyncWriteLine markdown
             let longKey = Abbreviation.Long key
             if Array.contains longKey Abbreviation.bwsWords then
-                return! writer.AsyncWrite <| String.Format("{0}---{0}{0}Back to [TOC](./toc.md), ([official docs]({1}))", nl, Abbreviation.docsUrl longKey)
+                return! writer.AsyncWrite <| String.Format("{0}---{0}{0}Back to [TOC](./toc.md), *([official docs]({1}))*", nl, Abbreviation.docsUrl longKey)
             else
                 return! writer.AsyncWrite <| String.Format("{0}---{0}{0}Back to [TOC](./toc.md)", nl)
         })
