@@ -1,7 +1,7 @@
 This is most useful for piping a file with commands into the [tool](./tool.md). When the
 execution is finished, the first non-zero error code is returned to the shell.
 
-These are the exit codes that are defined:
+These are the exit codes that are defined:  
 0: Ok
 1: OkButNo          Failed verification/livenessdetection or user unknown.
 2: Unauthorized     Missing/wrong/stale authentication.

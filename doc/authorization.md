@@ -1,4 +1,4 @@
-There are two ways to be authorized for BWS API calls:
+There are two ways to be authorized for BWS API calls:  
 1. Basic HTTP Authentication Scheme (RFC 7617)
 2. JSON Web Tokens (RFC 7519)
 

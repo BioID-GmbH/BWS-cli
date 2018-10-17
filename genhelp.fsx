@@ -4,7 +4,7 @@ open System.Text.RegularExpressions
 
 type System.IO.StreamWriter with
     member me.AsyncWrite (value:string) = me.WriteAsync value |> Async.AwaitTask
-    member me.AsyncWriteLine (value:string) = me.WriteLineAsync value |> Async.AwaitTask
+    member me.AsyncWriteLine (value:string) = value + Environment.NewLine |> me.AsyncWrite
 
 type Topic = string
 type Topics = Map<Topic, string>
@@ -104,10 +104,15 @@ if not doc.Exists then
 
 let markdownify =
     let links = Regex(@"\<(\w+)\>", RegexOptions.Compiled)
+    let newlines = Regex(@":\r?\n", RegexOptions.Compiled ||| RegexOptions.Multiline)
     fun (str:string) ->
-        links.Replace(str, fun m ->
-            sprintf "[%s](./%s.md)" m.Groups.[1].Value (m.Groups.[1].Value.ToLowerInvariant())
-        )
+        let a =
+            links.Replace(str, fun m ->
+                sprintf "[%s](./%s.md)" m.Groups.[1].Value (m.Groups.[1].Value.ToLowerInvariant())
+            )
+        let b =
+            newlines.Replace(a, ":  " + Environment.NewLine)
+        b
 
 let toc =
     stamped
@@ -135,11 +140,19 @@ stamped
         Some(async {
             use md = File.Open(Path.Combine(doc.FullName, key + ".md"), FileMode.Create)
             use writer = new StreamWriter(md)
-            let markdown =
-                if key = "tool" then value else
-                value |> markdownify
-            do! writer.AsyncWriteLine markdown
-            return! writer.AsyncWrite <| String.Format("{0}---{0}{0}Back to [TOC](./toc.md)", Environment.NewLine)
+            if key = "tool" then
+                for line in value.Split '\n' do
+                    let line = line.TrimEnd '\r'
+                    do! writer.AsyncWrite <| line
+                    if line.EndsWith(":", StringComparison.InvariantCulture)
+                    || line.StartsWith(" ", StringComparison.InvariantCulture) then
+                        do! writer.AsyncWrite "  "
+                    return! writer.AsyncWriteLine ""
+            else
+                let markdown =
+                    value |> markdownify
+                do! writer.AsyncWriteLine markdown
+                return! writer.AsyncWrite <| String.Format("{0}---{0}{0}Back to [TOC](./toc.md)", Environment.NewLine)
         })
 )
 |> Async.Parallel

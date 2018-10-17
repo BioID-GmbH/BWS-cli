@@ -3,7 +3,7 @@ create a new class (new BCID) or improve an existing class.
 
 Example call: enroll livedetection+
 
-Optional parameters:
+Optional parameters:  
    livedetection{+|-}   Enable or disable live detection (2+ images needed).
 
                         Attention: Disabling will have no effect if it was

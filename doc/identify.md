@@ -3,7 +3,7 @@ a list of classes with decreasing confidence.
 
 Example call: identify maxresults=3
 
-Optional parameters:
+Optional parameters:  
    livedetection{+|-}   Enable or disable live detection (2+ images needed).
 
                         Attention: Disabling will have no effect if it was

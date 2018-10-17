@@ -3,7 +3,7 @@ after this call but before the biometric call are considered to belong together.
 
 Example call: token bws.123.456 task=enroll
 
-Optional parameters:
+Optional parameters:  
    livedetection{+|-}   Enable or disable live detection (2+ images needed).
 
                         Attention: Disabling will have no effect if it was

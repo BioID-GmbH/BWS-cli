@@ -6,7 +6,7 @@ images.
 
 Example call: photoverify passport.png live1.png live2.png
 
-Optional parameters:
+Optional parameters:  
    accuracy=4           A confidence/strictness level from 1 to 5 (default: 4).
                         1 is not much better than guessing, not recommended!
                         5 is very strict and needs very good image quality.
