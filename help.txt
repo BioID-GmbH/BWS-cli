@@ -37,7 +37,8 @@ with --verbose option.
 
 Usage: status
 deleteclass---------------------------------------------------------------------
-Deletes all data associated with a BCID, which is the only mandatory parameter.
+Deletes all data associated with a <BCID>, which is the only mandatory
+parameter.
 plivedetection------------------------------------------------------------------
    livedetection{+|-}   Enable or disable live detection (2+ images needed).
 
@@ -46,7 +47,7 @@ plivedetection------------------------------------------------------------------
 
 enroll--------------------------------------------------------------------------
 Make a user (better) known to the system. Uploaded images are either used to
-create a new class (new BCID) or improve an existing class.
+create a new class (new <BCID>) or improve an existing class.
 
 Example call: enroll livedetection+
 
@@ -62,7 +63,7 @@ Optional parameters:
 %plivedetection%
    maxresults[=20]      The maximum number of matches to return.
 isenrolled----------------------------------------------------------------------
-Find out whether a BCID is enrolled with a specific trait. Both parameters are
+Find out whether a <BCID> is enrolled with a specific trait. Both parameters are
 required.
 
 Example call: isenrolled bws.123.456 face
@@ -72,7 +73,7 @@ Perform a live detection on exactly two images. No token is needed for this.
 Example call: livedetection one.png two.png
 livenessdetection---------------------------------------------------------------
 Perform a live detection on all uploaded images. In contrast to <livedetection>
-this works with challenge response and therefore needs a token.
+this works with challenge response and therefore needs a <token>.
 
 Usage: livenessdetection
 pause---------------------------------------------------------------------------
@@ -114,14 +115,14 @@ Optional parameters:
                         "BioID" for a bigger output image.
 result--------------------------------------------------------------------------
 Fetch the result of a previous biometric operation. Typically this is necessary
-if the token has been passed to another application to perform the biometric
+if the <token> has been passed to another application to perform the biometric
 operation and one now wants to get the outcome.
 
 If you don't provide a token string, the last from the history is used.
 
 Usage: result
 token---------------------------------------------------------------------------
-Get a token for a biometric operation for a mandatory BCID. Images uploaded
+Get a token for a biometric operation for a mandatory <BCID>. Images uploaded
 after this call but before the biometric call are considered to belong together.
 
 Example call: token bws.123.456 task=enroll
@@ -203,8 +204,8 @@ Apart from the special token-less calls the typical workflow is as follows:
    <BCID> that you provide and manage.
 2. Once a BCID is known (check with <isenrolled>) it can be used. One can check
    whether a user is who he claims to be with a <verify> call. To see who a
-   person (most probably) is, you'd use identify. And if you just want to make
-   shure that you're not fed fake images, <livenessdetection> is there to help.
+   person (most probably) is, you'd use <identify>. And if you just want to make
+   sure that you're not fed fake images, <livenessdetection> is there to help.
 
 Livenessdetection is a first step to defeat people trying to hack the system,
 but if you want more confidence, use challenge response. Here, the user is
@@ -213,10 +214,10 @@ prompted to follow random head movements.
 In addition to authentication, a token serves as a mechanism to associate
 samples to a BCID.
 
-When you get a token, you need to specify a BCID. Successive <upload> calls then
-use that token so that the BWS knows what class they belong to. These steps are
-completed with a biometric call which consumes the token. For new calls you need
-to get a fresh token.
+When you get a <token>, you need to specify a BCID. Successive <upload> calls
+then use that token so that the BWS knows what class they belong to. These steps
+are completed with a biometric call which consumes the token. For new calls you
+need to get a fresh token.
 authorization-------------------------------------------------------------------
 There are two ways to be authorized for BWS API calls:
 1. Basic HTTP Authentication Scheme (RFC 7617)
@@ -234,9 +235,9 @@ bcid----------------------------------------------------------------------------
 A BCID, or Biometric Class ID, is an identifier for the BWS. It consists of
 three parts separated by a dot or a forward slash.
 
-A single BCID must correspond to one and only one person. Never enroll different
-people with the same BCID or use the same BCID for different people! Doing so
-will severely degrade recognition.
+A single BCID must correspond to one and only one person. Never <enroll>
+different people with the same BCID or use the same BCID for different people!
+Doing so will severely degrade recognition.
 
 We care about data privacy, so we don't want to know anything about your users.
 You manage your users data with an associated BCID. And when you want to make a
@@ -256,6 +257,7 @@ them up randomly as you enroll. But do take care to respect the one-to-one
 mapping.
 
 Example: bws.123.456
+
 This identifies a class 456 within partition 123 of storage bws.
 tool----------------------------------------------------------------------------
 Usage: #tool# [options] [command]
@@ -289,9 +291,9 @@ For the <token> command the task can be given abbreviated.
 
 Example: token 456 e -> token bws.123.456 task=enroll
 
-After getting a token, normally one would issue <upload> commands which are then
-followed by a biometric command. You can leave out upload and just give the file
-names to the biometric command and the rest is handled automatically.
+After getting a <token>, normally one would issue <upload> commands which are
+then followed by a biometric command. You can leave out upload and just give the
+file names to the biometric command and the rest is handled automatically.
 
 Example: verify a.png b.png
       -> upload a.png
@@ -314,7 +316,7 @@ examples------------------------------------------------------------------------
    token 123 identify livedetection-
    identify current.jpg
 
-This enrolls all PNG files matching the pattern to a BCID ending in 123. After
+This enrolls all PNG files matching the pattern to a <BCID> ending in 123. After
 giving the BWS a little time to think, and an identification is done with
 another image.
 
@@ -329,7 +331,7 @@ another image.
    token 123 verify
    verify correct-person?.png
 
-Verify images against the 123 BCID. We expect that this verification fails and
+<Verify> images against the 123 BCID. We expect that this verification fails and
 continue only in that case. After that another person is checked and the result
 is returned to the shell.
 expect--------------------------------------------------------------------------
