@@ -105,7 +105,7 @@ if not doc.Exists then
 let markdownify =
     let links = Regex(@"\<(\w+)\>", RegexOptions.Compiled)
     let newlines = Regex(@":\r?\n", RegexOptions.Compiled ||| RegexOptions.Multiline)
-    let examplecall = Regex(@"Example( call)?: (.*)", RegexOptions.Compiled ||| RegexOptions.IgnoreCase)
+    let examplecall = Regex(@"(?:Usage|Example( call)?): (.*)", RegexOptions.Compiled ||| RegexOptions.IgnoreCase)
     let codeSpaces = Regex("^   ", RegexOptions.Compiled ||| RegexOptions.Multiline)
     let errorCodes = Regex("^(\d): (\w+)(:? +(.*))?", RegexOptions.Compiled ||| RegexOptions.Multiline)
     let hr = Regex("^ *-{3,}", RegexOptions.Compiled ||| RegexOptions.Multiline)
