@@ -21,9 +21,9 @@ names to the biometric command and the rest is handled automatically.
 
 Example: `verify a.png b.png`
 
-      -> upload a.png
-         upload b.png
-         verify
+       -> upload a.png
+          upload b.png
+          verify
 
 All commands that take a file accept multiple files in one call as well as glob
 patterns using ? and *.

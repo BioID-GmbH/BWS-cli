@@ -6,10 +6,10 @@ Example call: `enroll livedetection+`
 
 Optional parameters:
 
-   livedetection{+|-}   Enable or disable live detection (2+ images needed).
+    livedetection{+|-}   Enable or disable live detection (2+ images needed).
 
-                        Attention: Disabling will have no effect if it was
-                        enabled for the token!
+                         Attention: Disabling will have no effect if it was
+                         enabled for the token!
 
 
 ---

@@ -6,16 +6,16 @@ Example call: `upload left.png tag=left index=0`
 
 Optional parameters:
 
-   tag                  Attach some info/description to the uploaded file. This
-                        can e.g. be used with challenge response to say which
-                        movement an image was meant for (i.e. left, right, up,
-                        down).
+    tag                  Attach some info/description to the uploaded file. This
+                         can e.g. be used with challenge response to say which
+                         movement an image was meant for (i.e. left, right, up,
+                         down).
 
-   index                An index for a sequence of images. This can be necessary
-                        because images might not arrive in the order they were
-                        sent. This can then mess up challenge response.
+    index                An index for a sequence of images. This can be necessary
+                         because images might not arrive in the order they were
+                         sent. This can then mess up challenge response.
 
-   trait                Which trait shall be used?
+    trait                Which trait shall be used?
 
 ---
 
