@@ -37,11 +37,16 @@ Without Visual Studio, from the command line, you can for instance
 
 For other runtime targets see [this list][runtimes].
 
-### Is it working?
+Of course you need [.NET Core][core] (2.1) on your machine to compile.
 
-For a build check, do a simple `dotnet run --project bws-cli -- -h` which should show the
-parameter help screen (“quality check” being the last two words). Take care that you don't
-get the help screen of the `dotnet` command. That's why the `--` are needed.
+### Run
+
+For a quick check, do a simple `bws-cli -h` (on a developer machine `dotnet run --project
+bws-cli -- -h` which should show the parameter help screen (“quality check” being the last
+two words).
+
+Developers, take care that you don't get the help screen of the `dotnet` command.
+That's why the `--` are needed.
 
 ### Peculiarity with the produced binaries
 
@@ -63,3 +68,4 @@ Then run the binary from the subdirectory instead, it should work.
 [types]: http://fsharp.github.io/FSharp.Data/library/JsonProvider.html
 [runtimes]: https://docs.microsoft.com/en-us/dotnet/core/rid-catalog
 [help]: ./doc/toc.md
+[core]: https://www.microsoft.com/net/download
