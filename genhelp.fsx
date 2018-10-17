@@ -145,7 +145,7 @@ stamped
                     let line = line.Replace("<", "&lt;").Replace(">", "&gt;").TrimEnd '\r'
                     do! writer.AsyncWrite <| line
                     if line.EndsWith(":", StringComparison.InvariantCulture) then
-                        do! writer.AsyncWrite "  \n<PRE>"
+                        do! writer.AsyncWrite <| sprintf "  %s<PRE>" Environment.NewLine
                     elif line.StartsWith(" ", StringComparison.InvariantCulture) then
                         do! writer.AsyncWrite "  "
                     do! writer.AsyncWriteLine ""
