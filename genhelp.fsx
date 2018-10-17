@@ -128,6 +128,7 @@ let toc =
     |> Map.toList
     |> List.map fst
     |> List.filter ((<>) "")
+    |> List.filter ((<>) "help")
     |> List.sort
     |> List.map (fun entry -> String.Format("- [{0}](./{0}.md)", entry))
     |> join

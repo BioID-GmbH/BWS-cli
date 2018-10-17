@@ -9,7 +9,6 @@
 - [examples](./examples.md)
 - [exit](./exit.md)
 - [expect](./expect.md)
-- [help](./help.md)
 - [identify](./identify.md)
 - [isenrolled](./isenrolled.md)
 - [livedetection](./livedetection.md)
