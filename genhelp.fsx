@@ -103,7 +103,7 @@ if not doc.Exists then
     doc.Create()
 
 let markdownify =
-    let links = Regex(@"\<(?:help )?(\w+)\>", RegexOptions.Compiled)
+    let links = Regex(@"\<(\w+)\>", RegexOptions.Compiled)
     let newlines = Regex(@":\r?\n", RegexOptions.Compiled ||| RegexOptions.Multiline)
     let examplecall = Regex(@"Example( call)?: (.*)", RegexOptions.Compiled ||| RegexOptions.IgnoreCase)
     let codeSpaces = Regex("^   ", RegexOptions.Compiled ||| RegexOptions.Multiline)
