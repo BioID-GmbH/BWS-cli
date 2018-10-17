@@ -1,7 +1,7 @@
 Not much to say, just prints status information. If you want to see more, start
 with --verbose option.
 
-Example: `status`
+Usage: `status`
 
 
 ---

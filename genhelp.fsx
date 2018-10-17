@@ -105,7 +105,7 @@ if not doc.Exists then
 let markdownify =
     let links = Regex(@"\<(\w+)\>", RegexOptions.Compiled)
     let newlines = Regex(@":\r?\n", RegexOptions.Compiled ||| RegexOptions.Multiline)
-    let examplecall = Regex(@"(?:Usage|Example( call)?): (.*)", RegexOptions.Compiled ||| RegexOptions.IgnoreCase)
+    let examplecall = Regex(@"(Usage|Example(?: call)?): (.*)", RegexOptions.Compiled ||| RegexOptions.IgnoreCase)
     let codeSpaces = Regex("^   ", RegexOptions.Compiled ||| RegexOptions.Multiline)
     let errorCodes = Regex("^(\d): (\w+)(:? +(.*))?", RegexOptions.Compiled ||| RegexOptions.Multiline)
     let hr = Regex("^ *-{3,}", RegexOptions.Compiled ||| RegexOptions.Multiline)
@@ -115,7 +115,7 @@ let markdownify =
                 sprintf "[%s](./%s.md)" m.Groups.[1].Value (m.Groups.[1].Value.ToLowerInvariant())
             )
         let b = newlines.Replace(a, fun m -> m.Groups.[0].Value + nl)
-        let c = examplecall.Replace(b, "Example$1: `$2`" + nl)
+        let c = examplecall.Replace(b, "$1: `$2`" + nl)
         let d = codeSpaces.Replace(c, "    ")
         let e = errorCodes.Replace(d, fun m -> sprintf "%s. **%s**  \n  %s" m.Groups.[1].Value m.Groups.[2].Value m.Groups.[3].Value)
         let f = hr.Replace(e, "---")

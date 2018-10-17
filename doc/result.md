@@ -4,7 +4,7 @@ operation and one now wants to get the outcome.
 
 If you don't provide a token string, the last from the history is used.
 
-Example: `result`
+Usage: `result`
 
 
 ---
