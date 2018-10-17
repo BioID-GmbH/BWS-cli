@@ -37,6 +37,12 @@ Without Visual Studio, from the command line, you can for instance
 
 For other runtime targets see [this list][runtimes].
 
+### Is it working?
+
+For a build check, do a simple `dotnet run --project bws-cli -- -h` which should show the
+parameter help screen (“quality check” being the last two words). Take care that you don't
+get the help screen of the `dotnet` command. That's why the `--` are needed.
+
 ### Peculiarity with the produced binaries
 
 When publishing for a given platform, you get a binary in the top level of the output
