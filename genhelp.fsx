@@ -107,7 +107,7 @@ let markdownify =
     let newlines = Regex(@":\r?\n", RegexOptions.Compiled ||| RegexOptions.Multiline)
     let examplecall = Regex(@"Example( call)?: (.*)", RegexOptions.Compiled ||| RegexOptions.IgnoreCase)
     let codeSpaces = Regex("^   ", RegexOptions.Compiled ||| RegexOptions.Multiline)
-    let errorCodes = Regex("^(\d): (\w+) +(.*)", RegexOptions.Compiled ||| RegexOptions.Multiline)
+    let errorCodes = Regex("^(\d): (\w+)(:? +(.*))?", RegexOptions.Compiled ||| RegexOptions.Multiline)
     fun (str:string) ->
         let a =
             links.Replace(str, fun m ->
