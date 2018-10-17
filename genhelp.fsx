@@ -105,7 +105,7 @@ if not doc.Exists then
 let markdownify =
     let links = Regex(@"\<(\w+)\>", RegexOptions.Compiled)
     let newlines = Regex(@":\r?\n", RegexOptions.Compiled ||| RegexOptions.Multiline)
-    let examplecall = Regex(@"Example( call): (.*)", RegexOptions.Compiled ||| RegexOptions.IgnoreCase)
+    let examplecall = Regex(@"Example( call)?: (.*)", RegexOptions.Compiled ||| RegexOptions.IgnoreCase)
     fun (str:string) ->
         let a =
             links.Replace(str, fun m ->
