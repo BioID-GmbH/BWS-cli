@@ -1,4 +1,4 @@
-Get a token for a biometric operation for a mandatory BCID. Images uploaded
+Get a token for a biometric operation for a mandatory [BCID](./bcid.md). Images uploaded
 after this call but before the biometric call are considered to belong together.
 
 Example call: `token bws.123.456 task=enroll`

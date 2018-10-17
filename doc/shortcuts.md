@@ -15,9 +15,9 @@ For the [token](./token.md) command the task can be given abbreviated.
 Example: `token 456 e -> token bws.123.456 task=enroll`
 
 
-After getting a token, normally one would issue [upload](./upload.md) commands which are then
-followed by a biometric command. You can leave out upload and just give the file
-names to the biometric command and the rest is handled automatically.
+After getting a [token](./token.md), normally one would issue [upload](./upload.md) commands which are
+then followed by a biometric command. You can leave out upload and just give the
+file names to the biometric command and the rest is handled automatically.
 
 Example: `verify a.png b.png`
 

@@ -1,9 +1,9 @@
 A BCID, or Biometric Class ID, is an identifier for the BWS. It consists of
 three parts separated by a dot or a forward slash.
 
-A single BCID must correspond to one and only one person. Never enroll different
-people with the same BCID or use the same BCID for different people! Doing so
-will severely degrade recognition.
+A single BCID must correspond to one and only one person. Never [enroll](./enroll.md)
+different people with the same BCID or use the same BCID for different people!
+Doing so will severely degrade recognition.
 
 We care about data privacy, so we don't want to know anything about your users.
 You manage your users data with an associated BCID. And when you want to make a
@@ -23,6 +23,7 @@ them up randomly as you enroll. But do take care to respect the one-to-one
 mapping.
 
 Example: `bws.123.456`
+
 
 This identifies a class 456 within partition 123 of storage bws.
 

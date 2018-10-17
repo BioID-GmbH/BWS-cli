@@ -1,4 +1,4 @@
-Find out whether a BCID is enrolled with a specific trait. Both parameters are
+Find out whether a [BCID](./bcid.md) is enrolled with a specific trait. Both parameters are
 required.
 
 Example call: `isenrolled bws.123.456 face`

@@ -1,4 +1,5 @@
-Deletes all data associated with a BCID, which is the only mandatory parameter.
+Deletes all data associated with a [BCID](./bcid.md), which is the only mandatory
+parameter.
 
 ---
 
