@@ -27,3 +27,5 @@
 - [upload](./upload.md)
 - [verify](./verify.md)
 - [workflow](./workflow.md)
+
+*([official docs](https://developer.bioid.com/bwsreference/web-api))*

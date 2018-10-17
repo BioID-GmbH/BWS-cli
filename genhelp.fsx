@@ -142,7 +142,9 @@ stamped
             use writer = new StreamWriter(md)
             do! writer.AsyncWriteLine "# Table of Contents"
             do! writer.AsyncWriteLine ""
-            return! writer.AsyncWrite toc
+            do! writer.AsyncWrite toc
+            do! writer.AsyncWriteLine nl
+            return! writer.AsyncWrite <| sprintf "*([official docs](%s))*" (Abbreviation.docsUrl <| Abbreviation.Long "")
         })
     elif List.contains key ["help"; "plivedetection"] then
         None
