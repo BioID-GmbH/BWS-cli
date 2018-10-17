@@ -1,7 +1,7 @@
 Check whether a user claims who he is to be, i.e. this is a one-to-one
 comparison against a stored template.
 
-Example call: verify livedetection-
+Example call: `verify livedetection-`
 
 Optional parameters:  
    livedetection{+|-}   Enable or disable live detection (2+ images needed).

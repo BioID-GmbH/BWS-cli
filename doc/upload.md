@@ -1,7 +1,7 @@
 Upload files to the BWS for a biometric operation to come. Provide one or more
 file paths.
 
-Example call: upload left.png tag=left index=0
+Example call: `upload left.png tag=left index=0`
 
 Optional parameters:  
    tag                  Attach some info/description to the uploaded file. This

@@ -25,12 +25,12 @@ Example: verify a.png b.png
 All commands that take a file accept multiple files in one call as well as glob
 patterns using ? and *.
 
-Example call: enroll face*.png eye?.png
+Example call: `enroll face*.png eye?.png`
 
 All boolean parameters need not be given like setting=true. The shorthand
 setting+ or setting- is understood.
 
-Example call: enroll livedetection+
+Example call: `enroll livedetection+`
 
 ---
 

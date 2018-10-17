@@ -1,6 +1,6 @@
 Checks the quality of an image wrt. biometric compatibility.
 
-Example call: qualitycheck issuer=BioID face.bmp
+Example call: `qualitycheck issuer=BioID face.bmp`
 
 Optional parameters:  
    full{+|-}            If true (default) work in full document mode, otherwise

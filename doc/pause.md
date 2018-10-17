@@ -4,7 +4,7 @@ similar is started.
 
 If you don't give a number, 500 milliseconds is the default.
 
-Example call: pause 200
+Example call: `pause 200`
 
 ---
 

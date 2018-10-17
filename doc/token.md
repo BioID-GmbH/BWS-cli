@@ -1,7 +1,7 @@
 Get a token for a biometric operation for a mandatory BCID. Images uploaded
 after this call but before the biometric call are considered to belong together.
 
-Example call: token bws.123.456 task=enroll
+Example call: `token bws.123.456 task=enroll`
 
 Optional parameters:  
    livedetection{+|-}   Enable or disable live detection (2+ images needed).

@@ -1,7 +1,7 @@
 Identify which classes the uploaded images most likely belong to. The result is
 a list of classes with decreasing confidence.
 
-Example call: identify maxresults=3
+Example call: `identify maxresults=3`
 
 Optional parameters:  
    livedetection{+|-}   Enable or disable live detection (2+ images needed).
