@@ -14,7 +14,7 @@ These are the exit codes that are defined:
 4. **ParameterError**  
      Command was recognized, but the parameters had errors.
 5. **BwsError**  
-           The BWS returned an error. See --print-body in <help tool>.
+           The BWS returned an error. See --print-body in [tool](./tool.md).
 
 To get a success return code when you were expecting a non-zero code, see
 [expect](./expect.md) command.
