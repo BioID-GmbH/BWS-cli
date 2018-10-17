@@ -1,4 +1,6 @@
-﻿open System
+﻿#load "bws-cli/Abbreviation.fs"
+
+open System
 open System.IO
 open System.Text.RegularExpressions
 
@@ -161,7 +163,11 @@ stamped
                 let markdown =
                     value |> markdownify
                 do! writer.AsyncWriteLine markdown
-            return! writer.AsyncWrite <| String.Format("{0}---{0}{0}Back to [TOC](./toc.md)", nl)
+            let longKey = Abbreviation.Long key
+            if Array.contains longKey Abbreviation.bwsWords then
+                return! writer.AsyncWrite <| String.Format("{0}---{0}{0}Back to [TOC](./toc.md), [official docs]({1})", nl, Abbreviation.docsUrl longKey)
+            else
+                return! writer.AsyncWrite <| String.Format("{0}---{0}{0}Back to [TOC](./toc.md)", nl)
         })
 )
 |> Async.Parallel
