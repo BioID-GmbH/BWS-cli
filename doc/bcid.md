@@ -23,6 +23,7 @@ them up randomly as you enroll. But do take care to respect the one-to-one
 mapping.
 
 Example: `bws.123.456`
+
 This identifies a class 456 within partition 123 of storage bws.
 
 ---

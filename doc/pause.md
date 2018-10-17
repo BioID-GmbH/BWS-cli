@@ -6,6 +6,7 @@ If you don't give a number, 500 milliseconds is the default.
 
 Example call: `pause 200`
 
+
 ---
 
 Back to [TOC](./toc.md)

@@ -7,6 +7,7 @@ that don't understand a parameter silently ignore it.
 
 Example call: `set livedetection=false bcid=bws.123.456`
 
+
 Settings are given one or more key=value strings. Don't put spaces around the
 equal sign, it will confuse the parser!
 

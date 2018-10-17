@@ -3,7 +3,9 @@ file paths.
 
 Example call: `upload left.png tag=left index=0`
 
-Optional parameters:  
+
+Optional parameters:
+
    tag                  Attach some info/description to the uploaded file. This
                         can e.g. be used with challenge response to say which
                         movement an image was meant for (i.e. left, right, up,

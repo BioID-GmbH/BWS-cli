@@ -4,6 +4,7 @@ return code is returned to the shell.
 
 Example call: `expect 1`
 
+
 This after a [verify](./verify.md) call means that we expect the verification to be not
 successful.
 

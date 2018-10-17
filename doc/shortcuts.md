@@ -9,15 +9,18 @@ automatically.
 
 Example: `isenrolled 456 face -> isenrolled bws.123.456 face`
 
+
 For the [token](./token.md) command the task can be given abbreviated.
 
 Example: `token 456 e -> token bws.123.456 task=enroll`
+
 
 After getting a token, normally one would issue [upload](./upload.md) commands which are then
 followed by a biometric command. You can leave out upload and just give the file
 names to the biometric command and the rest is handled automatically.
 
 Example: `verify a.png b.png`
+
       -> upload a.png
          upload b.png
          verify
@@ -27,10 +30,12 @@ patterns using ? and *.
 
 Example call: `enroll face*.png eye?.png`
 
+
 All boolean parameters need not be given like setting=true. The shorthand
 setting+ or setting- is understood.
 
 Example call: `enroll livedetection+`
+
 
 ---
 

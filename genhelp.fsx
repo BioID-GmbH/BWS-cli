@@ -2,9 +2,12 @@
 open System.IO
 open System.Text.RegularExpressions
 
+let nl = Environment.NewLine
+let join = String.concat nl
+
 type System.IO.StreamWriter with
     member me.AsyncWrite (value:string) = me.WriteAsync value |> Async.AwaitTask
-    member me.AsyncWriteLine (value:string) = value + Environment.NewLine |> me.AsyncWrite
+    member me.AsyncWriteLine (value:string) = value + nl |> me.AsyncWrite
 
 type Topic = string
 type Topics = Map<Topic, string>
@@ -50,9 +53,6 @@ let templates =
     lines
     |> Seq.toList
     |> gather
-
-let nl = Environment.NewLine
-let join = String.concat nl
 
 /// Topics might cross-reference each other, that needs to be resolved.
 /// Also join lines with newlines.
@@ -111,9 +111,8 @@ let markdownify =
             links.Replace(str, fun m ->
                 sprintf "[%s](./%s.md)" m.Groups.[1].Value (m.Groups.[1].Value.ToLowerInvariant())
             )
-        let b =
-            newlines.Replace(a, ":  " + Environment.NewLine)
-        let c = examplecall.Replace(b, "Example$1: `$2`")
+        let b = newlines.Replace(a, fun m -> m.Groups.[0].Value + nl)
+        let c = examplecall.Replace(b, "Example$1: `$2`" + nl)
         c
 
 let toc =
@@ -123,7 +122,7 @@ let toc =
     |> List.filter ((<>) "")
     |> List.sort
     |> List.map (fun entry -> String.Format("- [{0}](./{0}.md)", entry))
-    |> String.concat Environment.NewLine
+    |> join
 
 stamped
 |> Map.toList
@@ -147,7 +146,7 @@ stamped
                     let line = line.Replace("<", "&lt;").Replace(">", "&gt;").TrimEnd '\r'
                     do! writer.AsyncWrite <| line
                     if line.EndsWith(":", StringComparison.InvariantCulture) then
-                        do! writer.AsyncWrite <| sprintf "  %s<PRE>" Environment.NewLine
+                        do! writer.AsyncWrite <| sprintf "  %s<PRE>" nl
                     elif line.StartsWith(" ", StringComparison.InvariantCulture) then
                         do! writer.AsyncWrite "  "
                     do! writer.AsyncWriteLine ""
@@ -156,7 +155,7 @@ stamped
                 let markdown =
                     value |> markdownify
                 do! writer.AsyncWriteLine markdown
-            return! writer.AsyncWrite <| String.Format("{0}---{0}{0}Back to [TOC](./toc.md)", Environment.NewLine)
+            return! writer.AsyncWrite <| String.Format("{0}---{0}{0}Back to [TOC](./toc.md)", nl)
         })
 )
 |> Async.Parallel

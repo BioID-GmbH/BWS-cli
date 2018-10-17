@@ -3,6 +3,7 @@ remove specific ones or no arguments to clear the settings table.
 
 Example call: `unset livedetection`
 
+
 ---
 
 Back to [TOC](./toc.md)
