@@ -39,7 +39,7 @@ For other runtime targets see [this list][runtimes].
 
 Of course you need [.NET Core][core] (2.1) on your machine to compile.
 
-### Run
+## Run
 
 For a quick check, do a simple `bws-cli -h` (on a developer machine `dotnet run --project
 bws-cli -- -h` which should show the parameter help screen (“quality check” being the last
