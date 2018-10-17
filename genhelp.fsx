@@ -1,5 +1,15 @@
-﻿open System
+﻿#load "bws-cli/Abbreviation.fs"
+
+open System
+open System.IO
 open System.Text.RegularExpressions
+
+let nl = Environment.NewLine
+let join = String.concat nl
+
+type System.IO.StreamWriter with
+    member me.AsyncWrite (value:string) = me.WriteAsync value |> Async.AwaitTask
+    member me.AsyncWriteLine (value:string) = value + nl |> me.AsyncWrite
 
 type Topic = string
 type Topics = Map<Topic, string>
@@ -46,9 +56,6 @@ let templates =
     |> Seq.toList
     |> gather
 
-let nl = Environment.NewLine
-let join = String.concat nl
-
 /// Topics might cross-reference each other, that needs to be resolved.
 /// Also join lines with newlines.
 let stamped : Topics =
@@ -86,8 +93,87 @@ let general = %s
 
 printfn "let specific =%s%s[" nl four
 for kv in stamped do
+    assert(kv.Key.ToCharArray() |> Array.forall Char.IsLower)
     if kv.Key = "tool" then
         printfn """%s"%s", %s%s%s.Replace("#tool#", Process.GetCurrentProcess().MainModule.FileName |> Path.GetFileName)""" four kv.Key three kv.Value three
     elif kv.Key <> "" then
         printfn """%s"%s", %s%s%s""" four kv.Key three kv.Value three
 printfn "%s] |> Map.ofList" four
+
+let doc = DirectoryInfo "doc"
+if not doc.Exists then
+    doc.Create()
+
+let markdownify =
+    let links = Regex(@"\<(\w+)\>", RegexOptions.Compiled)
+    let newlines = Regex(@":\r?\n", RegexOptions.Compiled ||| RegexOptions.Multiline)
+    let examplecall = Regex(@"(Usage|Example(?: call)?): (.*)", RegexOptions.Compiled ||| RegexOptions.IgnoreCase)
+    let codeSpaces = Regex("^   ", RegexOptions.Compiled ||| RegexOptions.Multiline)
+    let errorCodes = Regex("^(\d): (\w+)(:? +(.*))?", RegexOptions.Compiled ||| RegexOptions.Multiline)
+    let hr = Regex("^ *-{3,}", RegexOptions.Compiled ||| RegexOptions.Multiline)
+    fun (str:string) ->
+        let a =
+            links.Replace(str, fun m ->
+                sprintf "[%s](./%s.md)" m.Groups.[1].Value (m.Groups.[1].Value.ToLowerInvariant())
+            )
+        let b = newlines.Replace(a, fun m -> m.Groups.[0].Value + nl)
+        let c = examplecall.Replace(b, "$1: `$2`" + nl)
+        let d = codeSpaces.Replace(c, "    ")
+        let e = errorCodes.Replace(d, fun m -> sprintf "%s. **%s**  \n  %s" m.Groups.[1].Value m.Groups.[2].Value m.Groups.[3].Value)
+        let f = hr.Replace(e, "---")
+        f
+
+let toc =
+    stamped
+    |> Map.toList
+    |> List.map fst
+    |> List.filter ((<>) "")
+    |> List.filter ((<>) "help")
+    |> List.sort
+    |> List.map (fun entry -> String.Format("- [{0}](./{0}.md)", entry))
+    |> join
+
+stamped
+|> Map.toList
+|> List.choose (fun (key, value) ->
+    if key = "" then
+        Some(async {
+            use md = File.Open(Path.Combine(doc.FullName, "toc.md"), FileMode.Create)
+            use writer = new StreamWriter(md)
+            do! writer.AsyncWriteLine "# Table of Contents"
+            do! writer.AsyncWriteLine ""
+            do! writer.AsyncWriteLine "These are the topics that you can ask for help on.\n"
+            do! writer.AsyncWrite toc
+            do! writer.AsyncWriteLine nl
+            return! writer.AsyncWrite <| sprintf "*([official docs](%s))*" (Abbreviation.docsUrl <| Abbreviation.Long "")
+        })
+    elif List.contains key ["help"; "plivedetection"] then
+        None
+    else
+        Some(async {
+            use md = File.Open(Path.Combine(doc.FullName, key + ".md"), FileMode.Create)
+            use writer = new StreamWriter(md)
+            if key = "tool" then
+                for line in value.Replace("#tool#", "bws-cli").Split '\n' do
+                    let line = line.Replace("<", "&lt;").Replace(">", "&gt;").TrimEnd '\r'
+                    do! writer.AsyncWrite <| line
+                    if line.EndsWith(":", StringComparison.InvariantCulture) then
+                        do! writer.AsyncWrite <| sprintf "  %s<PRE>" nl
+                    elif line.StartsWith(" ", StringComparison.InvariantCulture) then
+                        do! writer.AsyncWrite "  "
+                    do! writer.AsyncWriteLine ""
+                do! writer.AsyncWriteLine "</PRE>"
+            else
+                let markdown =
+                    value |> markdownify
+                do! writer.AsyncWriteLine markdown
+            let longKey = Abbreviation.Long key
+            if Array.contains longKey Abbreviation.bwsWords then
+                return! writer.AsyncWrite <| String.Format("{0}---{0}{0}Back to [TOC](./toc.md), *([official docs]({1}))*", nl, Abbreviation.docsUrl longKey)
+            else
+                return! writer.AsyncWrite <| String.Format("{0}---{0}{0}Back to [TOC](./toc.md)", nl)
+        })
+)
+|> Async.Parallel
+|> Async.RunSynchronously
+|> ignore

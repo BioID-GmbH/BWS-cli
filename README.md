@@ -16,7 +16,8 @@ This command line interface is both a test client as well as a demo for all
 ## What you need
 
 To start the CLI you an application ID and secret, which you can get after having
-[registered for a trial instance][trial].
+[registered for a trial instance][trial]. Once you got the application running, look
+around with the [help command][help].
 
 ## Code
 
@@ -55,3 +56,4 @@ Then run the binary from the subdirectory instead, it should work.
 [trial]: https://bwsportal.bioid.com/register
 [types]: http://fsharp.github.io/FSharp.Data/library/JsonProvider.html
 [runtimes]: https://docs.microsoft.com/en-us/dotnet/core/rid-catalog
+[help]: ./doc/toc.md
