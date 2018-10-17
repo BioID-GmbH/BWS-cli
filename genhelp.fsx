@@ -141,8 +141,8 @@ stamped
             use md = File.Open(Path.Combine(doc.FullName, key + ".md"), FileMode.Create)
             use writer = new StreamWriter(md)
             if key = "tool" then
-                for line in value.Split '\n' do
-                    let line = line.TrimEnd '\r'
+                for line in value.Replace("#tool#", "bws-cli").Split '\n' do
+                    let line = line.Replace("<", "&lt;").Replace(">", "&gt;").TrimEnd '\r'
                     do! writer.AsyncWrite <| line
                     if line.EndsWith(":", StringComparison.InvariantCulture) then
                         do! writer.AsyncWrite "  \n<PRE>"
