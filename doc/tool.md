@@ -15,3 +15,7 @@ Options:
    -c, --clean-up         delete all classes created during the session at exit  
    -o, --output &lt;file&gt;    filename for the result of a quality check  
 </PRE>
+
+---
+
+Back to [TOC](./toc.md)

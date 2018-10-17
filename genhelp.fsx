@@ -149,12 +149,12 @@ stamped
                     elif line.StartsWith(" ", StringComparison.InvariantCulture) then
                         do! writer.AsyncWrite "  "
                     do! writer.AsyncWriteLine ""
-                return! writer.AsyncWriteLine "</PRE>"
+                do! writer.AsyncWriteLine "</PRE>"
             else
                 let markdown =
                     value |> markdownify
                 do! writer.AsyncWriteLine markdown
-                return! writer.AsyncWrite <| String.Format("{0}---{0}{0}Back to [TOC](./toc.md)", Environment.NewLine)
+            return! writer.AsyncWrite <| String.Format("{0}---{0}{0}Back to [TOC](./toc.md)", Environment.NewLine)
         })
 )
 |> Async.Parallel
